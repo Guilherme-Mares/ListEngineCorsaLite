@@ -56,42 +56,20 @@
 		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <AndroidResource Remove="Helpers\**" />
-	  <AndroidResource Remove="NovaPasta1\**" />
-	  <AndroidResource Remove="NovaPasta\**" />
-	  <AndroidResource Remove="ViewModels\**" />
-	  <Compile Remove="Helpers\**" />
-	  <Compile Remove="NovaPasta1\**" />
-	  <Compile Remove="NovaPasta\**" />
-	  <Compile Remove="ViewModels\**" />
-	  <EmbeddedResource Remove="Helpers\**" />
-	  <EmbeddedResource Remove="NovaPasta1\**" />
-	  <EmbeddedResource Remove="NovaPasta\**" />
-	  <EmbeddedResource Remove="ViewModels\**" />
-	  <MauiCss Remove="Helpers\**" />
-	  <MauiCss Remove="NovaPasta1\**" />
-	  <MauiCss Remove="NovaPasta\**" />
-	  <MauiCss Remove="ViewModels\**" />
-	  <MauiXaml Remove="Helpers\**" />
-	  <MauiXaml Remove="NovaPasta1\**" />
-	  <MauiXaml Remove="NovaPasta\**" />
-	  <MauiXaml Remove="ViewModels\**" />
-	  <None Remove="Helpers\**" />
-	  <None Remove="NovaPasta1\**" />
-	  <None Remove="NovaPasta\**" />
-	  <None Remove="ViewModels\**" />
-	</ItemGroup>
+
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <MauiXaml Update="NovoMotorPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="DetalhesMotorPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

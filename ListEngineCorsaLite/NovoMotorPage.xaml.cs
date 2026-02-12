@@ -1,14 +1,14 @@
-using ListEngineCorsaLite.Models;
+ï»¿using ListEngineCorsaLite.Models;
 
 namespace ListEngineCorsaLite;
 
 public partial class NovoMotorPage : ContentPage
 {
-    private Motor _motorEditando;
+    private Motor? _motorEditando;
     private bool _modoEdicao = false;
 
     public delegate void MotorSalvoHandler(Motor motor);
-    public event MotorSalvoHandler MotorSalvo;
+    public event MotorSalvoHandler? MotorSalvo;
 
     public NovoMotorPage()
     {
@@ -36,8 +36,8 @@ public partial class NovoMotorPage : ContentPage
         EntryAnoInicio.Text = "2000";
         EntryAnoFim.Text = "2005";
 
-        PickerCombustivel.SelectedIndex = 0; // Gasolina
-        PickerCambio.SelectedIndex = 0; // Manual 5 marchas
+        PickerCombustivel.SelectedIndex = 0;
+        PickerCambio.SelectedIndex = 0;
     }
 
     private void PreencherCampos(Motor motor)
@@ -51,7 +51,6 @@ public partial class NovoMotorPage : ContentPage
         EntryTorque.Text = motor.Torque.ToString();
         EntryCilindros.Text = motor.Cilindros.ToString();
 
-        // Seleciona os valores nos Pickers
         if (!string.IsNullOrEmpty(motor.Combustivel))
         {
             var indexCombustivel = PickerCombustivel.Items.IndexOf(motor.Combustivel);
@@ -92,8 +91,8 @@ public partial class NovoMotorPage : ContentPage
     private async void OnCancelarClicked(object sender, EventArgs e)
     {
         bool confirmar = await DisplayAlert("Cancelar",
-            "Deseja cancelar? As alterações serão perdidas.",
-            "Sim", "Não");
+            "Deseja cancelar? As altera" + "\u00e7" + "\u00f5es ser\u00e3o perdidas.",
+            "Sim", "N\u00e3o");
 
         if (confirmar)
             await Navigation.PopAsync();
@@ -103,26 +102,24 @@ public partial class NovoMotorPage : ContentPage
     {
         try
         {
-            // Validações básicas
             if (!int.TryParse(EntryAnoInicio.Text, out int anoInicio))
             {
-                await DisplayAlert("Erro", "Ano início inválido", "OK");
+                await DisplayAlert("Erro", "Ano in\u00edcio inv\u00e1lido", "OK");
                 return;
             }
 
             if (!int.TryParse(EntryAnoFim.Text, out int anoFim))
             {
-                await DisplayAlert("Erro", "Ano fim inválido", "OK");
+                await DisplayAlert("Erro", "Ano fim inv\u00e1lido", "OK");
                 return;
             }
 
             if (anoFim < anoInicio)
             {
-                await DisplayAlert("Erro", "Ano fim não pode ser menor que ano início", "OK");
+                await DisplayAlert("Erro", "Ano fim n\u00e3o pode ser menor que ano in\u00edcio", "OK");
                 return;
             }
 
-            // Cria ou atualiza o motor
             Motor motor = _modoEdicao && _motorEditando != null ?
                 _motorEditando : new Motor();
 
@@ -137,9 +134,8 @@ public partial class NovoMotorPage : ContentPage
             motor.Combustivel = PickerCombustivel.SelectedItem?.ToString() ?? "Gasolina";
             motor.Cambio = PickerCambio.SelectedItem?.ToString() ?? "Manual 5 marchas";
             motor.Tracao = "Dianteira";
-            motor.Alimentacao = "Injeção Multiponto";
+            motor.Alimentacao = "Inje\u00e7\u00e3o Multiponto";
 
-            // Notifica o salvamento
             MotorSalvo?.Invoke(motor);
 
             await DisplayAlert("Sucesso!",
@@ -151,7 +147,7 @@ public partial class NovoMotorPage : ContentPage
         catch (FormatException)
         {
             await DisplayAlert("Erro",
-                "Verifique se todos os campos numéricos estão corretos",
+                "Verifique se todos os campos num\u00e9ricos est\u00e3o corretos",
                 "OK");
         }
         catch (Exception ex)

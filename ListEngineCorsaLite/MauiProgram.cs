@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using ListEngineCorsaLite.Services;
+using Microsoft.Extensions.Logging;
 
 namespace ListEngineCorsaLite
 {
@@ -14,6 +15,13 @@ namespace ListEngineCorsaLite
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+            // Services
+            builder.Services.AddSingleton<DatabaseService>();
+
+            // Pages
+            builder.Services.AddTransient<MainPage>();
+            builder.Services.AddTransient<DetalhesMotorPage>();
 
 #if DEBUG
     		builder.Logging.AddDebug();

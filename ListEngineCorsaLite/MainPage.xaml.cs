@@ -1,4 +1,5 @@
 ﻿using ListEngineCorsaLite.Models;
+using ListEngineCorsaLite.Services;
 using System.Collections.ObjectModel;
 
 namespace ListEngineCorsaLite;
@@ -7,13 +8,13 @@ public partial class MainPage : ContentPage
 {
 
     private ObservableCollection<Motor> _motores = new();
-    private DatabaseService _database;
+    private readonly DatabaseService _database;
     private string imagemSelecionada;
 
-    public MainPage()
+    public MainPage(DatabaseService database)
     {
         InitializeComponent();
-        _database = new DatabaseService();
+        _database = database;
         CarregarMotores();
     }
 
@@ -61,7 +62,6 @@ public partial class MainPage : ContentPage
         {
             LoadingIndicator.IsVisible = true;
             var motores = await _database.GetAllMotoresAsync();
-            await DisplayAlert("Debug", $"Motores: {motores.Count}", "OK");
             _motores.Clear();
             foreach (var motor in motores)
             {
@@ -355,41 +355,14 @@ public partial class MainPage : ContentPage
     }
 
     private async void OnItemTapped(object sender, TappedEventArgs e)
-{
-    if (e.Parameter is not Motor motor)
-        return;
-
-    var acao = await DisplayActionSheet(
-        $"Editar: {motor.Modelo}",
-        "Cancelar",
-        null,
-        "✏️ Editar Dados",
-        "🖼 Alterar Imagem",
-        "⭐ Favorito",
-        "🗑 Deletar");
-
-    switch (acao)
     {
-        case "✏️ Editar Dados":
-            await EditarMotorCompleto(motor);
-            AtualizarLista();
-            break;
+        if (e.Parameter is not Motor motor)
+            return;
 
-        case "🖼 Alterar Imagem":
-            await AlterarImagemMotor(motor);
-            AtualizarLista();
-            break;
-
-        case "⭐ Favorito":
-            motor.Favorito = !motor.Favorito;
-            await _database.SaveMotorAsync(motor);
-            AtualizarLista();
-            break;
-
-        case "🗑 Deletar":
-            await DeletarMotor(motor);
-            break;
+        await Shell.Current.GoToAsync(nameof(DetalhesMotorPage), new Dictionary<string, object>
+        {
+            { "Motor", motor }
+        });
     }
-}
 
 }
