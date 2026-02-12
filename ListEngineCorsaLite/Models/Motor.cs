@@ -5,7 +5,10 @@ namespace ListEngineCorsaLite.Models;
 
 public class Motor
 {
+    [PrimaryKey, AutoIncrement]
     public int Id { get; set; }
+    public string Nome { get; set; }
+    public string Descricao { get; set; }
     public string Modelo { get; set; } = string.Empty;
     public string Codigo { get; set; } = string.Empty;
     public int AnoInicio { get; set; } = 2000;
@@ -19,7 +22,9 @@ public class Motor
     public string Cambio { get; set; } = "Manual 5 marchas";
     public string Tracao { get; set; } = "Dianteira";
     public bool Favorito { get; set; }
+     public string ImagemPath { get; set; }
+
 
     public string Periodo => $"{AnoInicio}-{AnoFim}";
-    public string Especificacoes => $"{Cilindrada}cc • {Potencia}cv • {Torque}Nm";
+    public string Especificacoes => $"{Cilindrada}cc • {Potencia}cv • {Torque}Kg/fm";
 }

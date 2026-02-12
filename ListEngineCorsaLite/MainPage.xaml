@@ -1,132 +1,118 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:converters="clr-namespace:ListEngineCorsaLite.Converters"
              x:Class="ListEngineCorsaLite.MainPage"
-             Title="ListEngine Corsa Lite">
+             Title="📋 ListEngine Corsa"
+             BackgroundColor="{StaticResource BgDark}">
 
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <converters:FavoritoConverter x:Key="FavoritoConverter" />
-        </ResourceDictionary>
-    </ContentPage.Resources>
+    <Grid Padding="10"
+          RowDefinitions="Auto,Auto,Auto,*,Auto">
 
-    <Grid>
-        <!-- Lista de Motores -->
-        <CollectionView x:Name="MotoresCollection">
+        <!-- ===== TÍTULO ===== -->
+        <Label Text="Motores do Chevrolet Corsa"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               Margin="0,10,0,0"/>
+
+        <!-- ===== AÇÕES ===== -->
+        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+
+            <Button Text="➕ Adicionar"
+                    Clicked="OnAdicionarClicked"
+                    HorizontalOptions="FillAndExpand"
+                    />
+
+            <Button Text="🔍 Pesquisar"
+                    Clicked="OnPesquisarClicked"
+                    HorizontalOptions="FillAndExpand"/>
+
+            
+        </HorizontalStackLayout>
+
+        <!-- ===== PREVIEW ===== -->
+        <Image x:Name="PreviewImagem"
+        Grid.Row="2"
+        HeightRequest="1"
+        Aspect="AspectFit"
+        HorizontalOptions="Center"
+        VerticalOptions="Start"/>
+
+        <!-- ===== LISTA ===== -->
+        <CollectionView x:Name="listaMotores"
+                        Grid.Row="3"
+                        Margin="0,10"
+                        VerticalOptions="FillAndExpand">
+
             <CollectionView.ItemTemplate>
                 <DataTemplate>
-                    <Frame Margin="10,5"
-                           CornerRadius="10"
-                           BackgroundColor="White"
-                           Padding="15"
-                           HasShadow="True">
+                    <Frame Padding="10"
+                           Margin="0,6"
+                           BorderColor="#DDD">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer
+            Tapped="OnItemTapped"
+            CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
 
-                        <Grid ColumnDefinitions="Auto,*,Auto"
-                              RowDefinitions="Auto,Auto">
 
-                            <!-- Ícone -->
-                            <Label Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"
-                                   Text="⚙️"
-                                   FontSize="20"
-                                   VerticalOptions="Center"
-                                   Margin="0,0,10,0"/>
+                        <Grid ColumnDefinitions="120,*"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                              ColumnSpacing="10">
 
-                            <!-- Informações -->
-                            <VerticalStackLayout Grid.Column="1" Grid.Row="0">
-                                <Label Text="{Binding Modelo}" 
-                                       FontSize="16" 
-                                       FontAttributes="Bold"/>
-                                <Label Text="{Binding Codigo}" 
-                                       FontSize="14"
-                                       TextColor="#2196F3"/>
-                            </VerticalStackLayout>
+                            <!-- IMAGEM -->
+                            <Image Grid.RowSpan="7"
+                                   Source="{Binding ImagemPath}"
+                                   HeightRequest="110"
+                                   WidthRequest="110"
+                                   Aspect="AspectFit"/>
 
-                            <!-- Botão Favorito -->
-                            <Button Grid.Column="2" Grid.Row="0"
-                                    Text="{Binding Favorito, Converter={StaticResource FavoritoConverter}}"
-                                    BackgroundColor="Transparent"
-                                    TextColor="#FF9800"
-                                    FontSize="20"
-                                    Clicked="OnFavoritoClicked"
-                                    CommandParameter="{Binding .}"
-                                    WidthRequest="40"
-                                    HeightRequest="40"/>
+                            <!-- DADOS -->
+                            <Label Grid.Column="1"
+       Text="{Binding Modelo}"
+       FontSize="18"
+       FontAttributes="Bold"/>
 
-                            <!-- Detalhes -->
-                            <HorizontalStackLayout Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"
-                                                   Margin="0,5">
-                                <Frame BackgroundColor="#E8F5E8"
-                                       CornerRadius="5"
-                                       Padding="5,2">
-                                    <Label Text="{Binding Potencia, StringFormat='{0} cv'}" 
-                                           FontSize="12"
-                                           FontAttributes="Bold"
-                                           TextColor="#2E7D32"/>
-                                </Frame>
+                            <Label Grid.Row="1" Grid.Column="1"
+       Text="{Binding Codigo, StringFormat='Código: {0}'}"/>
 
-                                <Frame BackgroundColor="#E3F2FD"
-                                       CornerRadius="5"
-                                       Padding="5,2"
-                                       Margin="5,0">
-                                    <Label Text="{Binding Cilindrada, StringFormat='{0} cc'}" 
-                                           FontSize="12"
-                                           FontAttributes="Bold"
-                                           TextColor="#1565C0"/>
-                                </Frame>
+                            <Label Grid.Row="2" Grid.Column="1"
+       Text="{Binding Cilindrada, StringFormat='Cilindrada: {0} cc'}"/>
 
-                                <Label Text="{Binding Periodo}" 
-                                       FontSize="12"
-                                       TextColor="#666"
-                                       VerticalOptions="Center"
-                                       Margin="10,0,0,0"/>
-                            </HorizontalStackLayout>
+                            <Label Grid.Row="3" Grid.Column="1"
+       Text="{Binding Potencia, StringFormat='Potência: {0} cv'}"/>
+
+                            <Label Grid.Row="4" Grid.Column="1"
+       Text="{Binding Torque, StringFormat='Torque: {0}'}"/>
+
+                            <Label Grid.Row="5" Grid.Column="1"
+       Text="{Binding Combustivel, StringFormat='Combustível: {0}'}"/>
+
+                            <Label Grid.Row="6" Grid.Column="1"
+       Text="{Binding Cambio, StringFormat='Câmbio: {0}'}"/>
+
                         </Grid>
+
                     </Frame>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-        </CollectionView>
-        <!-- NO FINAL do Grid, antes do botão Adicionar, adicione: -->
-        <Button x:Name="BtnEditar"
-        Text="✏️"
-        BackgroundColor="#FF9800"
-        TextColor="White"
-        CornerRadius="25"
-        WidthRequest="50"
-        HeightRequest="50"
-        HorizontalOptions="End"
-        VerticalOptions="End"
-        Margin="0,0,80,20"
-        Clicked="OnEditarClicked"
-        IsVisible="False"/>
-        <!-- Botão Adicionar -->
-        <Button Text="➕"
-                BackgroundColor="#2196F3"
-                TextColor="White"
-                CornerRadius="25"
-                WidthRequest="50"
-                HeightRequest="50"
-                HorizontalOptions="End"
-                VerticalOptions="End"
-                Margin="0,0,20,20"
-                Clicked="OnAdicionarClicked"/>
 
-        <!-- Mensagem se não houver motores -->
-        <VerticalStackLayout x:Name="EmptyView"
-                             IsVisible="False"
-                             HorizontalOptions="Center"
-                             VerticalOptions="Center">
-            <Label Text="🚗" 
-                   FontSize="40"/>
-            <Label Text="Nenhum motor cadastrado" 
-                   FontSize="16"
-                   TextColor="#666"
-                   Margin="0,10"/>
-            <Button Text="ADICIONAR PRIMEIRO MOTOR"
-                    BackgroundColor="#4CAF50"
-                    TextColor="White"
-                    CornerRadius="10"
-                    Clicked="OnAdicionarClicked"/>
-        </VerticalStackLayout>
+        </CollectionView>
+
+        <!-- ===== LOADING / EMPTY ===== -->
+        <ActivityIndicator x:Name="LoadingIndicator"
+                           Grid.Row="3"
+                           IsRunning="True"
+                           IsVisible="False"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+
+        <Label x:Name="EmptyView"
+               Grid.Row="3"
+               Text="Nenhum motor cadastrado"
+               IsVisible="False"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               TextColor="Gray"/>
+
     </Grid>
 </ContentPage>

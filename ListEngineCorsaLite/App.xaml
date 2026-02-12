@@ -4,6 +4,7 @@
              xmlns:local="clr-namespace:ListEngineCorsaLite"
              x:Class="ListEngineCorsaLite.App">
     <Application.Resources>
+        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />

@@ -1,6 +1,7 @@
 ﻿using ListEngineCorsaLite.Models;
 using SQLite;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ListEngineCorsaLite.Models;
 
@@ -8,116 +9,113 @@ public class DatabaseService
 {
     private SQLiteAsyncConnection _database;
     private bool _initialized = false;
+    private readonly SemaphoreSlim _semaphore = new(1, 1);
 
     public DatabaseService()
     {
-        // A inicialização será feita no primeiro uso
+        // Inicialização lazy
     }
 
-    private async Task InitializeDatabaseAsync()
+    private async Task InitializeAsync()
     {
         if (!_initialized)
         {
-            // Caminho do banco de dados no dispositivo
-            var databasePath = Path.Combine(FileSystem.AppDataDirectory, "motores.db3");
-
-            _database = new SQLiteAsyncConnection(databasePath);
-
-            // Cria a tabela se não existir
-            await _database.CreateTableAsync<Motor>();
-
-            // Insere dados iniciais se a tabela estiver vazia
-            await SeedDatabaseAsync();
-
-            _initialized = true;
+            await _semaphore.WaitAsync();
+            try
+            {
+                if (!_initialized)
+                {
+                    var databasePath = Path.Combine(FileSystem.AppDataDirectory, "motores.db3");
+                    _database = new SQLiteAsyncConnection(databasePath);
+                    await _database.CreateTableAsync<Motor>();
+                    await SeedDataAsync();
+                    _initialized = true;
+                }
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
         }
     }
 
-    private async Task SeedDatabaseAsync()
+    private async Task SeedDataAsync()
     {
         var count = await _database.Table<Motor>().CountAsync();
 
         if (count == 0)
         {
-            // Insere alguns motores de exemplo
             await _database.InsertAllAsync(new[]
             {
-                new Motor
-                {
-                    Modelo = "Corsa Wind 1.0 MPFi",
-                    Codigo = "C16NZ",
-                    AnoInicio = 1994,
-                    AnoFim = 1999,
-                    Cilindrada = 1598,
-                    Potencia = 92,
-                    Torque = 128,
-                    Cilindros = 4,
-                    Combustivel = "Gasolina",
-                    Cambio = "Manual 5 marchas",
-                    Tracao = "Dianteira",
-                    Alimentacao = "Injeção Multiponto",
-                    Favorito = true
-                },
-                new Motor
-                {
-                    Modelo = "Corsa GSi 1.6 16V",
-                    Codigo = "X16XEL",
-                    AnoInicio = 1996,
-                    AnoFim = 2002,
-                    Cilindrada = 1598,
-                    Potencia = 106,
-                    Torque = 150,
-                    Cilindros = 4,
-                    Combustivel = "Gasolina",
-                    Cambio = "Manual 5 marchas",
-                    Tracao = "Dianteira",
-                    Alimentacao = "Injeção Multiponto",
-                    Favorito = false
-                }
+                new Motor { Modelo = "Corsa GL 1.6", Codigo = "C16NZ", Cilindrada = 1598, Potencia = 92 },
+                new Motor { Modelo = "Corsa GSi 1.6", Codigo = " Ecotec X16XE", Cilindrada = 1598, Potencia = 106, Torque = 14 }
             });
         }
     }
 
-    // ========== OPERAÇÕES CRUD ==========
+    // CRUD METHODS
 
-    // Obter todos os motores
-    public async Task<ObservableCollection<Motor>> GetMotoresAsync()
+    public async Task<List<Motor>> GetAllMotoresAsync()
     {
-        await InitializeDatabaseAsync();
-        var motores = await _database.Table<Motor>().ToListAsync();
-        return new ObservableCollection<Motor>(motores);
+        await InitializeAsync();
+        return await _database.Table<Motor>().OrderBy(m => m.Modelo).ToListAsync();
     }
 
-    // Salvar ou atualizar motor
+    public async Task<Motor> GetMotorByIdAsync(int id)
+    {
+        await InitializeAsync();
+        return await _database.Table<Motor>().FirstOrDefaultAsync(m => m.Id == id);
+    }
+
     public async Task<int> SaveMotorAsync(Motor motor)
     {
-        await InitializeDatabaseAsync();
+        await InitializeAsync();
+
+        if (motor == null)
+            throw new ArgumentNullException(nameof(motor));
 
         if (motor.Id == 0)
-        {
-            // Novo motor
             return await _database.InsertAsync(motor);
-        }
         else
-        {
-            // Atualizar motor existente
             return await _database.UpdateAsync(motor);
-        }
     }
 
-    // Deletar motor
+    // 🔥 DELETE À PROVA DE CRASH
     public async Task<int> DeleteMotorAsync(Motor motor)
     {
-        await InitializeDatabaseAsync();
-        return await _database.DeleteAsync(motor);
+        await InitializeAsync();
+
+        // Evita crash por null
+        if (motor == null)
+        {
+            Debug.WriteLine("DeleteMotorAsync chamado com motor null");
+            return 0;
+        }
+
+        // Evita crash por objeto não persistido
+        if (motor.Id == 0)
+        {
+            Debug.WriteLine("DeleteMotorAsync chamado com motor sem Id");
+            return 0;
+        }
+
+        Debug.WriteLine($"Deletando motor Id={motor.Id}");
+
+        return await _database.DeleteAsync<Motor>(motor.Id);
     }
 
-    // Buscar motor por ID
-    public async Task<Motor> GetMotorAsync(int id)
+    // Métodos extras úteis
+    public async Task<List<Motor>> GetFavoritosAsync()
     {
-        await InitializeDatabaseAsync();
+        await InitializeAsync();
         return await _database.Table<Motor>()
-            .Where(m => m.Id == id)
-            .FirstOrDefaultAsync();
+            .Where(m => m.Favorito)
+            .ToListAsync();
+    }
+
+    public async Task<int> GetTotalCountAsync()
+    {
+        await InitializeAsync();
+        return await _database.Table<Motor>().CountAsync();
     }
 }

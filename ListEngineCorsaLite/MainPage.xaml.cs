@@ -5,153 +5,391 @@ namespace ListEngineCorsaLite;
 
 public partial class MainPage : ContentPage
 {
+
     private ObservableCollection<Motor> _motores = new();
-    private Motor _motorSelecionado;
+    private DatabaseService _database;
+    private string imagemSelecionada;
 
     public MainPage()
     {
         InitializeComponent();
-        CarregarDadosIniciais();
+        _database = new DatabaseService();
+        CarregarMotores();
+    }
+
+    // ========== CREATE ==========
+    private async void OnAdicionarClicked(object sender, EventArgs e)
+    {
+        // Pede o nome do novo motor
+        var modelo = await DisplayPromptAsync("Novo Motor",
+            "Nome do motor:", "Adicionar", "Cancelar");
+
+        if (string.IsNullOrWhiteSpace(modelo))
+            return;
+
+        // Cria novo motor
+        var novoMotor = new Motor
+        {
+            Modelo = modelo,
+            Codigo = "NOVO",
+            Cilindrada = 1600,
+            Potencia = 100,
+            Torque = 140,
+            Cilindros = 4,
+            Combustivel = "Gasolina",
+            Cambio = "Manual 5 marchas",
+            ImagemPath = imagemSelecionada
+        };
+
+        // Salva no banco
+        await _database.SaveMotorAsync(novoMotor);
+
+        // Adiciona na lista
+        _motores.Add(novoMotor);
+        AtualizarLista();
+        imagemSelecionada = null;
+        PreviewImagem.Source = null;
+
+
+        await DisplayAlert("Sucesso", "Motor adicionado!", "OK");
+    }
+
+    // ========== READ ==========
+    private async void CarregarMotores()
+    {
+        try
+        {
+            LoadingIndicator.IsVisible = true;
+            var motores = await _database.GetAllMotoresAsync();
+            await DisplayAlert("Debug", $"Motores: {motores.Count}", "OK");
+            _motores.Clear();
+            foreach (var motor in motores)
+            {
+                _motores.Add(motor);
+            }
+
+            AtualizarLista();
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro", $"Erro ao carregar: {ex.Message}", "OK");
+        }
+        finally
+        {
+            LoadingIndicator.IsVisible = false;
+        }
+    }
+    private async Task MudarCambio(Motor motor)
+    {
+        var cambio = await DisplayActionSheet("Câmbio",
+            "Cancelar", null,
+            "Manual 5 marchas",
+            "Manual 6 marchas",
+            "Automático 4 marchas",
+            "Automático 6 marchas",
+            "CVT",
+            "Semi-automático");
+
+        if (cambio != "Cancelar" && !string.IsNullOrEmpty(cambio))
+        {
+            motor.Cambio = cambio;
+            await _database.SaveMotorAsync(motor);
+            AtualizarLista();
+        }
+    }
+    private void AtualizarLista()
+    {
+        listaMotores.ItemsSource = null;
+        listaMotores.ItemsSource = _motores;
+        EmptyView.IsVisible = _motores.Count == 0;
+    }
+
+    // ========== UPDATE ==========
+
+    // Edição direta nos campos
+    private async void OnCampoEditado(object sender, EventArgs e)
+    {
+        if (sender is Entry entry && entry.BindingContext is Motor motor)
+        {
+            // Pequeno delay para não salvar a cada tecla
+            await Task.Delay(500);
+
+            // Salva no banco
+            await _database.SaveMotorAsync(motor);
+
+            // Feedback visual
+            entry.BackgroundColor = Color.FromArgb("#E8F5E8");
+            _ = Task.Delay(300).ContinueWith(_ =>
+                MainThread.BeginInvokeOnMainThread(() =>
+                    entry.BackgroundColor = Colors.Transparent));
+        }
+    }
+
+    // Menu de edição avançada
+    private async void OnMenuClicked(object sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is Motor motor)
+        {
+            var acao = await DisplayActionSheet($"Editar: {motor.Modelo}",
+                "Cancelar", null,
+                "✏️ Editar Tudo",
+                "⛽ Mudar Combustível",
+                "🔧 Mudar Câmbio",
+                "📊 Ver Detalhes",
+                "🗑️ Deletar");
+
+            switch (acao)
+            {
+                case "✏️ Editar Tudo":
+                    await EditarMotorCompleto(motor);
+                    break;
+
+                case "⛽ Mudar Combustível":
+                    await MudarCombustivel(motor);
+                    break;
+
+                case "🔧 Mudar Câmbio":
+                    await MudarCambio(motor);
+                    break;
+
+                case "📊 Ver Detalhes":
+                    await VerDetalhes(motor);
+                    break;
+
+                case "🗑️ Deletar":
+                    await DeletarMotor(motor);
+                    break;
+            }
+        }
+    }
+
+    private async Task EditarMotorCompleto(Motor motor)
+    {
+        // Modelo
+        var novoModelo = await DisplayPromptAsync("Editar", "Modelo:",
+            initialValue: motor.Modelo);
+        if (!string.IsNullOrWhiteSpace(novoModelo))
+            motor.Modelo = novoModelo;
+
+        // Código
+        var novoCodigo = await DisplayPromptAsync("Editar", "Código:",
+            initialValue: motor.Codigo);
+        if (!string.IsNullOrWhiteSpace(novoCodigo))
+            motor.Codigo = novoCodigo;
+
+        // Potência
+        var potenciaStr = await DisplayPromptAsync("Editar", "Potência (cv):",
+            initialValue: motor.Potencia.ToString(), keyboard: Keyboard.Numeric);
+        if (int.TryParse(potenciaStr, out int potencia))
+            motor.Potencia = potencia;
+
+        // Cilindrada
+        var cilindradaStr = await DisplayPromptAsync("Editar", "Cilindrada (cc):",
+            initialValue: motor.Cilindrada.ToString(), keyboard: Keyboard.Numeric);
+        if (int.TryParse(cilindradaStr, out int cilindrada))
+            motor.Cilindrada = cilindrada;
+
+        // Salva
+        await _database.SaveMotorAsync(motor);
         AtualizarLista();
     }
 
-    private void CarregarDadosIniciais()
+    private async Task MudarCombustivel(Motor motor)
     {
-        // Adiciona alguns motores de exemplo
-        _motores.Add(new Motor
+        var combustivel = await DisplayActionSheet("Combustível",
+            "Cancelar", null, "Gasolina", "Flex", "Álcool", "Diesel");
+
+        if (combustivel != "Cancelar" && !string.IsNullOrEmpty(combustivel))
         {
-            Id = 1,
-            Modelo = "Corsa Wind 1.0 MPFi",
-            Codigo = "C16NZ",
-            AnoInicio = 1994,
-            AnoFim = 1999,
-            Cilindrada = 1598,
-            Potencia = 92,
-            Torque = 128,
-            Cilindros = 4,
-            Combustivel = "Gasolina",
-            Cambio = "Manual 5 marchas",
-            Favorito = true
-        });
-
-        _motores.Add(new Motor
-        {
-            Id = 2,
-            Modelo = "Corsa GSi 1.6 16V",
-            Codigo = "X16XEL",
-            AnoInicio = 1996,
-            AnoFim = 2002,
-            Cilindrada = 1598,
-            Potencia = 106,
-            Torque = 150,
-            Cilindros = 4,
-            Combustivel = "Gasolina",
-            Cambio = "Manual 5 marchas",
-            Favorito = false
-        });
-    }
-
-    private void AtualizarLista()
-    {
-        MotoresCollection.ItemsSource = null;
-        MotoresCollection.ItemsSource = _motores;
-
-        // Mostra/oculta mensagem de vazio
-        EmptyView.IsVisible = _motores.Count == 0;
-        MotoresCollection.IsVisible = _motores.Count > 0;
-
-        // Atualiza botão editar
-        BtnEditar.IsVisible = _motorSelecionado != null;
-    }
-
-    // Quando seleciona um motor (adicione este evento no XAML)
-    private void OnMotorSelecionado(object sender, SelectionChangedEventArgs e)
-    {
-        if (e.CurrentSelection.FirstOrDefault() is Motor motor)
-        {
-            _motorSelecionado = motor;
-            BtnEditar.IsVisible = true;
-        }
-        else
-        {
-            _motorSelecionado = null;
-            BtnEditar.IsVisible = false;
+            motor.Combustivel = combustivel;
+            await _database.SaveMotorAsync(motor);
         }
     }
 
-    // Evento do botão favorito
-    private void OnFavoritoClicked(object sender, EventArgs e)
+    private async Task VerDetalhes(Motor motor)
     {
-        if (sender is Button button && button.CommandParameter is Motor motor)
+        var detalhes = $"""
+            🏎️ {motor.Modelo}
+            🔢 {motor.Codigo}
+            
+            ⚙️ ESPECIFICAÇÕES:
+            • Cilindrada: {motor.Cilindrada} cc
+            • Potência: {motor.Potencia} cv
+            • Torque: {motor.Torque} Kg/fm
+            • Cilindros: {motor.Cilindros}
+            
+            ⛽ COMBUSTÍVEL: {motor.Combustivel}
+            🔧 CÂMBIO: {motor.Cambio}
+            📅 PERÍODO: {motor.AnoInicio}-{motor.AnoFim}
+            
+            ⭐ Favorito: {(motor.Favorito ? "Sim" : "Não")}
+            """;
+
+        await DisplayAlert("Detalhes do Motor", detalhes, "OK");
+    }
+
+    // ========== DELETE ==========
+    private async Task DeletarMotor(Motor motor)
+    {
+        // Proteção absoluta contra null
+        if (motor == null)
+        {
+            await DisplayAlert("Erro", "Motor inválido.", "OK");
+            return;
+        }
+
+        bool confirmar = await DisplayAlert(
+            "Confirmar",
+            $"Deletar motor '{motor.Modelo}'?",
+            "Sim",
+            "Não");
+
+        if (!confirmar)
+            return;
+
+        try
+        {
+            // Deleta do banco
+            await _database.DeleteMotorAsync(motor);
+
+            // Remove da lista SEM crash (UI thread garantida)
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                if (_motores.Contains(motor))
+                    _motores.Remove(motor);
+
+                AtualizarLista();
+            });
+
+            await DisplayAlert("Sucesso", "Motor deletado!", "OK");
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Erro",
+                $"Falha ao deletar motor:\n{ex.Message}",
+                "OK");
+        }
+    }
+
+
+    // ========== FAVORITO ==========
+    private async void OnFavoritoClicked(object sender, EventArgs e)
+    {
+        if (sender is Button btn && btn.CommandParameter is Motor motor)
         {
             motor.Favorito = !motor.Favorito;
+            await _database.SaveMotorAsync(motor);
 
-            // Força atualização do item na lista
-            var index = _motores.IndexOf(motor);
-            if (index >= 0)
+            // Atualiza visualmente
+            btn.Text = motor.Favorito ? "★" : "☆";
+        }
+    }
+
+    // ========== PESQUISA ==========
+    private async void OnPesquisarClicked(object sender, EventArgs e)
+    {
+        var termo = await DisplayPromptAsync("Pesquisar",
+            "Digite o nome ou código:", "Buscar", "Cancelar");
+
+        if (!string.IsNullOrWhiteSpace(termo))
+        {
+            // Filtra a lista local
+            var filtrados = _motores.Where(m =>
+                m.Modelo.Contains(termo, StringComparison.OrdinalIgnoreCase) ||
+                m.Codigo.Contains(termo, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            listaMotores.ItemsSource = filtrados;
+
+            if (filtrados.Count == 0)
             {
-                _motores[index] = motor;
+                await DisplayAlert("Pesquisa", "Nenhum motor encontrado", "OK");
             }
         }
     }
-
-    // Botão EDITAR
-    private async void OnEditarClicked(object sender, EventArgs e)
+    async void SelecionarImagem_Clicked(object sender, EventArgs e)
     {
-        if (_motorSelecionado == null)
+        var result = await FilePicker.PickAsync(new PickOptions
         {
-            await DisplayAlert("Aviso", "Selecione um motor para editar", "OK");
+            PickerTitle = "Selecione uma imagem",
+            FileTypes = FilePickerFileType.Images
+        });
+
+        if (result != null)
+        {
+            var novoCaminho = Path.Combine(FileSystem.AppDataDirectory, result.FileName);
+
+            using var stream = await result.OpenReadAsync();
+            using var newStream = File.OpenWrite(novoCaminho);
+            await stream.CopyToAsync(newStream);
+
+            imagemSelecionada = novoCaminho;
+            PreviewImagem.Source = imagemSelecionada;
+        }
+    }
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        CarregarMotores();
+    }
+    private async Task AlterarImagemMotor(Motor motor)
+    {
+        var result = await FilePicker.PickAsync(new PickOptions
+        {
+            PickerTitle = "Selecione a nova imagem",
+            FileTypes = FilePickerFileType.Images
+        });
+
+        if (result == null)
             return;
-        }
 
-        var paginaEdicao = new NovoMotorPage(_motorSelecionado);
-        paginaEdicao.MotorSalvo += (motorAtualizado) =>
-        {
-            // Atualiza o motor na lista
-            var index = _motores.IndexOf(_motorSelecionado);
-            if (index >= 0)
-            {
-                _motores[index] = motorAtualizado;
-                AtualizarLista();
-            }
-        };
+        var novoCaminho = Path.Combine(FileSystem.AppDataDirectory, result.FileName);
 
-        await Navigation.PushAsync(paginaEdicao);
+        using var stream = await result.OpenReadAsync();
+        using var newStream = File.OpenWrite(novoCaminho);
+        await stream.CopyToAsync(newStream);
+
+        motor.ImagemPath = novoCaminho;
+
+        await _database.SaveMotorAsync(motor);
     }
 
-    // Botão ADICIONAR (atualizado)
-    private async void OnAdicionarClicked(object sender, EventArgs e)
+    private async void OnItemTapped(object sender, TappedEventArgs e)
+{
+    if (e.Parameter is not Motor motor)
+        return;
+
+    var acao = await DisplayActionSheet(
+        $"Editar: {motor.Modelo}",
+        "Cancelar",
+        null,
+        "✏️ Editar Dados",
+        "🖼 Alterar Imagem",
+        "⭐ Favorito",
+        "🗑 Deletar");
+
+    switch (acao)
     {
-        var paginaNovo = new NovoMotorPage();
-        paginaNovo.MotorSalvo += (novoMotor) =>
-        {
-            novoMotor.Id = _motores.Count + 1;
-            _motores.Add(novoMotor);
+        case "✏️ Editar Dados":
+            await EditarMotorCompleto(motor);
             AtualizarLista();
-        };
+            break;
 
-        await Navigation.PushAsync(paginaNovo);
-    }
-
-    // Botão DELETAR (adicione no XAML também)
-    private async void OnDeletarClicked(object sender, EventArgs e)
-    {
-        if (_motorSelecionado == null)
-        {
-            await DisplayAlert("Aviso", "Selecione um motor para deletar", "OK");
-            return;
-        }
-
-        bool confirmar = await DisplayAlert("Confirmar",
-            $"Tem certeza que deseja deletar o motor {_motorSelecionado.Modelo}?",
-            "Sim", "Não");
-
-        if (confirmar)
-        {
-            _motores.Remove(_motorSelecionado);
-            _motorSelecionado = null;
+        case "🖼 Alterar Imagem":
+            await AlterarImagemMotor(motor);
             AtualizarLista();
-            await DisplayAlert("Sucesso", "Motor deletado com sucesso!", "OK");
-        }
+            break;
+
+        case "⭐ Favorito":
+            motor.Favorito = !motor.Favorito;
+            await _database.SaveMotorAsync(motor);
+            AtualizarLista();
+            break;
+
+        case "🗑 Deletar":
+            await DeletarMotor(motor);
+            break;
     }
+}
+
 }
