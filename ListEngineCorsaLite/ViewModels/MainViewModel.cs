@@ -21,7 +21,7 @@ public partial class MainViewModel : ObservableObject
         Motores.Add(new Motor
         {
             Id = 1,
-            Modelo = "Corsa Wind 1.0",
+            Modelo = "Corsa GL 1.6",
             Codigo = "C16NZ",
             AnoInicio = 1994,
             AnoFim = 1999,
@@ -48,7 +48,7 @@ public partial class MainViewModel : ObservableObject
         {
             Id = 3,
             Modelo = "Corsa 1.0 Flex",
-            Codigo = "CHT Flex",
+            Codigo = "VHC",
             AnoInicio = 2002,
             AnoFim = 2012,
             Cilindrada = 998,
