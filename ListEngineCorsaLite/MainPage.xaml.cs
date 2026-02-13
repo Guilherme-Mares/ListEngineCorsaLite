@@ -4,6 +4,9 @@ using System.Collections.ObjectModel;
 
 namespace ListEngineCorsaLite;
 
+// Este comentário foi adicionado para testar o Git!
+// Pense no Git como uma máquina do tempo para o seu código.
+// Agora vamos salvar esta alteração no histórico.
 public partial class MainPage : ContentPage
 {
 
