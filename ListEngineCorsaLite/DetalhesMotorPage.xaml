@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ListEngineCorsaLite.DetalhesMotorPage"
+             Title="Detalhes do Motor"
+             BackgroundColor="{StaticResource BgDark}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16">
+
+            <!-- ===== HEADER ===== -->
+            <Frame BackgroundColor="{StaticResource CardDark}"
+                   CornerRadius="12"
+                   Padding="20"
+                   HasShadow="False"
+                   BorderColor="{StaticResource Divider}">
+                <VerticalStackLayout Spacing="6">
+                    <Label x:Name="LblModelo"
+                           FontSize="26"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource TextWhite}"
+                           HorizontalOptions="Center"/>
+                    <Label x:Name="LblCodigo"
+                           FontSize="16"
+                           TextColor="{StaticResource GMBlue}"
+                           HorizontalOptions="Center"
+                           FontAttributes="Bold"/>
+                    <Label x:Name="LblPeriodo"
+                           FontSize="14"
+                           TextColor="{StaticResource TextGray}"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- ===== IMAGEM ===== -->
+            <Frame x:Name="FrameImagem"
+                   BackgroundColor="{StaticResource CardDark}"
+                   CornerRadius="12"
+                   Padding="10"
+                   HasShadow="False"
+                   IsVisible="False"
+                   BorderColor="{StaticResource Divider}">
+                <Image x:Name="ImgMotor"
+                       HeightRequest="200"
+                       Aspect="AspectFit"/>
+            </Frame>
+
+            <!-- ===== RESUMO ===== -->
+            <Frame x:Name="FrameResumo"
+                   BackgroundColor="{StaticResource CardDark}"
+                   CornerRadius="12"
+                   Padding="16"
+                   HasShadow="False"
+                   BorderColor="{StaticResource Divider}">
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8">
+                    <Frame BackgroundColor="#1E3A5F"
+                           CornerRadius="10"
+                           Padding="10"
+                           HasShadow="False">
+                        <VerticalStackLayout HorizontalOptions="Center">
+                            <Label x:Name="LblCilindradaResumo"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextWhite}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Cilindrada"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextGray}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Column="1"
+                           BackgroundColor="#1E3A5F"
+                           CornerRadius="10"
+                           Padding="10"
+                           HasShadow="False">
+                        <VerticalStackLayout HorizontalOptions="Center">
+                            <Label x:Name="LblPotenciaResumo"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextWhite}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Potência"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextGray}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                    <Frame Grid.Column="2"
+                           BackgroundColor="#1E3A5F"
+                           CornerRadius="10"
+                           Padding="10"
+                           HasShadow="False">
+                        <VerticalStackLayout HorizontalOptions="Center">
+                            <Label x:Name="LblTorqueResumo"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   TextColor="{StaticResource TextWhite}"
+                                   HorizontalOptions="Center"/>
+                            <Label Text="Torque"
+                                   FontSize="10"
+                                   TextColor="{StaticResource TextGray}"
+                                   HorizontalOptions="Center"/>
+                        </VerticalStackLayout>
+                    </Frame>
+                </Grid>
+            </Frame>
+
+            <!-- ===== DESCRIÇÃO ===== -->
+            <Frame x:Name="FrameDescricao"
+                   BackgroundColor="{StaticResource CardDark}"
+                   CornerRadius="12"
+                   Padding="16"
+                   HasShadow="False"
+                   IsVisible="False"
+                   BorderColor="{StaticResource Divider}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="📖  DESCRIÇÃO"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GMBlue}"/>
+                    <BoxView HeightRequest="1"
+                             BackgroundColor="{StaticResource Divider}"/>
+                    <Label x:Name="LblDescricao"
+                           FontSize="14"
+                           TextColor="{StaticResource TextGray}"
+                           LineBreakMode="WordWrap"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- ===== ESPECIFICAÇÕES TÉCNICAS ===== -->
+            <Frame BackgroundColor="{StaticResource CardDark}"
+                   CornerRadius="12"
+                   Padding="16"
+                   HasShadow="False"
+                   BorderColor="{StaticResource Divider}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="⚙️  ESPECIFICAÇÕES TÉCNICAS"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GMBlue}"/>
+                    <BoxView HeightRequest="1"
+                             BackgroundColor="{StaticResource Divider}"/>
+
+                    <!-- Cilindrada -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Cilindrada"
+                               TextColor="{StaticResource TextGray}"
+                               FontSize="14"/>
+                        <Label x:Name="LblCilindrada"
+                               Grid.Column="1"
+                               TextColor="{StaticResource TextWhite}"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <!-- Potência -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Potência"
+                               TextColor="{StaticResource TextGray}"
+                               FontSize="14"/>
+                        <Label x:Name="LblPotencia"
+                               Grid.Column="1"
+                               TextColor="{StaticResource TextWhite}"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <!-- Torque -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Torque"
+                               TextColor="{StaticResource TextGray}"
+                               FontSize="14"/>
+                        <Label x:Name="LblTorque"
+                               Grid.Column="1"
+                               TextColor="{StaticResource TextWhite}"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <!-- Cilindros -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Cilindros"
+                               TextColor="{StaticResource TextGray}"
+                               FontSize="14"/>
+                        <Label x:Name="LblCilindros"
+                               Grid.Column="1"
+                               TextColor="{StaticResource TextWhite}"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- ===== CONFIGURAÇÃO ===== -->
+            <Frame BackgroundColor="{StaticResource CardDark}"
+                   CornerRadius="12"
+                   Padding="16"
+                   HasShadow="False"
+                   BorderColor="{StaticResource Divider}">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="🔧  CONFIGURAÇÃO"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="{StaticResource GMBlue}"/>
+                    <BoxView HeightRequest="1"
+                             BackgroundColor="{StaticResource Divider}"/>
+
+                    <!-- Combustível -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Combustível"
+                               TextColor="{StaticResource TextGray}"
+                               FontSize="14"/>
+                        <Label x:Name="LblCombustivel"
+                               Grid.Column="1"
+                               TextColor="{StaticResource TextWhite}"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <!-- Alimentação -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Alimentação"
+                               TextColor="{StaticResource TextGray}"
+                               FontSize="14"/>
+                        <Label x:Name="LblAlimentacao"
+                               Grid.Column="1"
+                               TextColor="{StaticResource TextWhite}"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <!-- Câmbio -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Câmbio"
+                               TextColor="{StaticResource TextGray}"
+                               FontSize="14"/>
+                        <Label x:Name="LblCambio"
+                               Grid.Column="1"
+                               TextColor="{StaticResource TextWhite}"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Grid>
+
+                    <!-- Tração -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="Tração"
+                               TextColor="{StaticResource TextGray}"
+                               FontSize="14"/>
+                        <Label x:Name="LblTracao"
+                               Grid.Column="1"
+                               TextColor="{StaticResource TextWhite}"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- ===== BOTÕES DE AÇÃO ===== -->
+            <Grid ColumnDefinitions="*,*,*"
+                  ColumnSpacing="10"
+                  Margin="0,5">
+
+                <Button x:Name="BtnFavorito"
+                        Text="☆ Favorito"
+                        BackgroundColor="#2A2A2A"
+                        TextColor="{StaticResource TextWhite}"
+                        CornerRadius="10"
+                        HeightRequest="48"
+                        FontSize="13"
+                        Clicked="OnFavoritoClicked"/>
+
+                <Button Grid.Column="1"
+                        Text="✏️ Editar"
+                        BackgroundColor="{StaticResource GMBlue}"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="48"
+                        FontSize="13"
+                        Clicked="OnEditarClicked"/>
+
+                <Button Grid.Column="2"
+                        Text="🗑️ Deletar"
+                        BackgroundColor="#8B0000"
+                        TextColor="White"
+                        CornerRadius="10"
+                        HeightRequest="48"
+                        FontSize="13"
+                        Clicked="OnDeletarClicked"/>
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

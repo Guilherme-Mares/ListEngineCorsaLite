@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ===== PAGE ===== -->
+    <Style TargetType="ContentPage">
+        <Setter Property="BackgroundColor" Value="{StaticResource BgDark}" />
+    </Style>
+
+    <!-- ===== LABEL ===== -->
+    <Style TargetType="Label">
+        <Setter Property="TextColor" Value="{StaticResource TextWhite}" />
+    </Style>
+
+    <!-- ===== BUTTON ===== -->
+    <Style TargetType="Button">
+        <Setter Property="BackgroundColor" Value="{StaticResource GMBlue}" />
+        <Setter Property="TextColor" Value="White" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="FontAttributes" Value="Bold"/>
+    </Style>
+
+    <!-- ===== FRAME (CARDS) ===== -->
+    <Style TargetType="Frame">
+        <Setter Property="BackgroundColor" Value="{StaticResource CardDark}" />
+        <Setter Property="BorderColor" Value="#2A2A2A" />
+        <Setter Property="CornerRadius" Value="14" />
+        <Setter Property="HasShadow" Value="True" />
+    </Style>
+
+    <!-- ===== ENTRY ===== -->
+    <Style TargetType="Entry">
+        <Setter Property="TextColor" Value="{StaticResource TextWhite}" />
+        <Setter Property="PlaceholderColor" Value="{StaticResource TextGray}" />
+        <Setter Property="BackgroundColor" Value="#1C1C1C"/>
+    </Style>
+
+    <!-- ===== ACTIVITY INDICATOR ===== -->
+    <Style TargetType="ActivityIndicator">
+        <Setter Property="Color" Value="{StaticResource GMBlue}" />
+    </Style>
+
+</ResourceDictionary>
+

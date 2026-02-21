@@ -1,0 +1,118 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ListEngineCorsaLite.MainPage"
+             Title="📋 ListEngine Corsa"
+             BackgroundColor="{StaticResource BgDark}">
+
+    <Grid Padding="10"
+          RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+        <!-- ===== TÍTULO ===== -->
+        <Label Text="Motores do Chevrolet Corsa"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               Margin="0,10,0,0"/>
+
+        <!-- ===== AÇÕES ===== -->
+        <HorizontalStackLayout Grid.Row="1" Spacing="10">
+
+            <Button Text="➕ Adicionar"
+                    Clicked="OnAdicionarClicked"
+                    HorizontalOptions="FillAndExpand"
+                    />
+
+            <Button Text="🔍 Pesquisar"
+                    Clicked="OnPesquisarClicked"
+                    HorizontalOptions="FillAndExpand"/>
+
+            
+        </HorizontalStackLayout>
+
+        <!-- ===== PREVIEW ===== -->
+        <Image x:Name="PreviewImagem"
+        Grid.Row="2"
+        HeightRequest="1"
+        Aspect="AspectFit"
+        HorizontalOptions="Center"
+        VerticalOptions="Start"/>
+
+        <!-- ===== LISTA ===== -->
+        <CollectionView x:Name="listaMotores"
+                        Grid.Row="3"
+                        Margin="0,10"
+                        VerticalOptions="FillAndExpand">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="10"
+                           Margin="0,6"
+                           BorderColor="#DDD">
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer
+            Tapped="OnItemTapped"
+            CommandParameter="{Binding .}" />
+                        </Frame.GestureRecognizers>
+
+
+                        <Grid ColumnDefinitions="120,*"
+                              RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+                              ColumnSpacing="10">
+
+                            <!-- IMAGEM -->
+                            <Image Grid.RowSpan="7"
+                                   Source="{Binding ImagemPath}"
+                                   HeightRequest="110"
+                                   WidthRequest="110"
+                                   Aspect="AspectFit"/>
+
+                            <!-- DADOS -->
+                            <Label Grid.Column="1"
+       Text="{Binding Modelo}"
+       FontSize="18"
+       FontAttributes="Bold"/>
+
+                            <Label Grid.Row="1" Grid.Column="1"
+       Text="{Binding Codigo, StringFormat='Código: {0}'}"/>
+
+                            <Label Grid.Row="2" Grid.Column="1"
+       Text="{Binding Cilindrada, StringFormat='Cilindrada: {0} cc'}"/>
+
+                            <Label Grid.Row="3" Grid.Column="1"
+       Text="{Binding Potencia, StringFormat='Potência: {0} cv'}"/>
+
+                            <Label Grid.Row="4" Grid.Column="1"
+       Text="{Binding Torque, StringFormat='Torque: {0}'}"/>
+
+                            <Label Grid.Row="5" Grid.Column="1"
+       Text="{Binding Combustivel, StringFormat='Combustível: {0}'}"/>
+
+                            <Label Grid.Row="6" Grid.Column="1"
+       Text="{Binding Cambio, StringFormat='Câmbio: {0}'}"/>
+
+                        </Grid>
+
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+        <!-- ===== LOADING / EMPTY ===== -->
+        <ActivityIndicator x:Name="LoadingIndicator"
+                           Grid.Row="3"
+                           IsRunning="True"
+                           IsVisible="False"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center"/>
+
+        <Label x:Name="EmptyView"
+               Grid.Row="3"
+               Text="Nenhum motor cadastrado"
+               IsVisible="False"
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               TextColor="Gray"/>
+
+    </Grid>
+</ContentPage>

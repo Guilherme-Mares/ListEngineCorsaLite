@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!-- ===== GM IDENTITY ===== -->
+    <Color x:Key="GMBlue">#005DAA</Color>
+
+    <!-- ===== DARK THEME ===== -->
+    <Color x:Key="BgDark">#0E0E0E</Color>
+    <Color x:Key="CardDark">#1A1A1A</Color>
+
+    <!-- ===== TEXT ===== -->
+    <Color x:Key="TextWhite">#FFFFFF</Color>
+    <Color x:Key="TextGray">#CFCFCF</Color>
+
+    <!-- ===== EXTRA ===== -->
+    <Color x:Key="Divider">#2A2A2A</Color>
+
+</ResourceDictionary>

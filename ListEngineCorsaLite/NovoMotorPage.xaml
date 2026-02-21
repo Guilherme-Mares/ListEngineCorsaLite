@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ListEngineCorsaLite.NovoMotorPage"
+             Title="Novo Motor">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <!-- Cabeçalho -->
+            <Frame BackgroundColor="#E3F2FD" 
+                   CornerRadius="10"
+                   Padding="15">
+                <VerticalStackLayout>
+                    <Label Text="➕ NOVO MOTOR" 
+                           FontSize="18" 
+                           FontAttributes="Bold"
+                           HorizontalOptions="Center"
+                           TextColor="#0D47A1"/>
+                    <Label Text="Preencha as informações técnicas" 
+                           FontSize="12"
+                           HorizontalOptions="Center"
+                           TextColor="#666"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Formulário Principal -->
+            <Frame BackgroundColor="White" 
+                   CornerRadius="10"
+                   Padding="15"
+                   HasShadow="True">
+
+                <VerticalStackLayout Spacing="15">
+
+                    <!-- SEÇÃO: IDENTIFICAÇÃO -->
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="📝 IDENTIFICAÇÃO" 
+                               FontSize="14" 
+                               FontAttributes="Bold"
+                               TextColor="#333"/>
+
+                        <!-- Modelo -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Modelo do Carro *" 
+                                   FontSize="13"/>
+                            <Entry x:Name="EntryModelo"
+                                   Placeholder="Ex: Corsa Classic 1.6"
+                                   TextChanged="OnFormChanged"/>
+                        </VerticalStackLayout>
+
+                        <!-- Código -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Código do Motor *" 
+                                   FontSize="13"/>
+                            <Entry x:Name="EntryCodigo"
+                                   Placeholder="Ex: C20XE"
+                                   TextChanged="OnFormChanged"/>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                    <!-- Linha Divisória -->
+                    <BoxView HeightRequest="1" 
+                             BackgroundColor="#EEEEEE"
+                             Margin="0,5"/>
+
+                    <!-- SEÇÃO: PERÍODO -->
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="📅 PERÍODO DE PRODUÇÃO" 
+                               FontSize="14" 
+                               FontAttributes="Bold"
+                               TextColor="#333"/>
+
+                        <Grid ColumnDefinitions="*,Auto,*" 
+                              ColumnSpacing="10">
+
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Ano Início *" 
+                                       FontSize="12"/>
+                                <Entry x:Name="EntryAnoInicio"
+                                       Placeholder="2000"
+                                       Keyboard="Numeric"
+                                       TextChanged="OnFormChanged"
+                                       HorizontalOptions="Fill"/>
+                            </VerticalStackLayout>
+
+                            <Label Grid.Column="1"
+                                   Text="–"
+                                   FontSize="16"
+                                   VerticalOptions="Center"
+                                   HorizontalOptions="Center"
+                                   Margin="0,10"/>
+
+                            <VerticalStackLayout Grid.Column="2">
+                                <Label Text="Ano Fim *" 
+                                       FontSize="12"/>
+                                <Entry x:Name="EntryAnoFim"
+                                       Placeholder="2005"
+                                       Keyboard="Numeric"
+                                       TextChanged="OnFormChanged"
+                                       HorizontalOptions="Fill"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Linha Divisória -->
+                    <BoxView HeightRequest="1" 
+                             BackgroundColor="#EEEEEE"
+                             Margin="0,5"/>
+
+                    <!-- SEÇÃO: ESPECIFICAÇÕES -->
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="⚙️ ESPECIFICAÇÕES TÉCNICAS" 
+                               FontSize="14" 
+                               FontAttributes="Bold"
+                               TextColor="#333"/>
+
+                        <!-- Cilindrada e Potência -->
+                        <Grid ColumnDefinitions="*,*" 
+                              ColumnSpacing="15">
+
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Cilindrada (cc) *" 
+                                       FontSize="12"/>
+                                <Entry x:Name="EntryCilindrada"
+                                       Placeholder="1600"
+                                       Keyboard="Numeric"
+                                       TextChanged="OnFormChanged"/>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Potência (cv) *" 
+                                       FontSize="12"/>
+                                <Entry x:Name="EntryPotencia"
+                                       Placeholder="100"
+                                       Keyboard="Numeric"
+                                       TextChanged="OnFormChanged"/>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Torque e Cilindros -->
+                        <Grid ColumnDefinitions="*,*" 
+                              ColumnSpacing="15"
+                              Margin="0,10,0,0">
+
+                            <VerticalStackLayout Grid.Column="0">
+                                <Label Text="Torque (Nm) *" 
+                                       FontSize="12"/>
+                                <Entry x:Name="EntryTorque"
+                                       Placeholder="140"
+                                       Keyboard="Numeric"
+                                       TextChanged="OnFormChanged"/>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1">
+                                <Label Text="Cilindros *" 
+                                       FontSize="12"/>
+                                <Entry x:Name="EntryCilindros"
+                                       Placeholder="4"
+                                       Keyboard="Numeric"
+                                       TextChanged="OnFormChanged"/>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+
+                    <!-- Linha Divisória -->
+                    <BoxView HeightRequest="1" 
+                             BackgroundColor="#EEEEEE"
+                             Margin="0,5"/>
+
+                    <!-- SEÇÃO: CONFIGURAÇÃO -->
+                    <VerticalStackLayout Spacing="10">
+                        <Label Text="🔧 CONFIGURAÇÃO" 
+                               FontSize="14" 
+                               FontAttributes="Bold"
+                               TextColor="#333"/>
+
+                        <!-- Combustível -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Combustível" 
+                                   FontSize="12"/>
+                            <Picker x:Name="PickerCombustivel"
+                                    Title="Selecione o combustível..."
+                                    SelectedIndexChanged="OnFormChanged">
+                                <Picker.Items>
+                                    <x:String>Gasolina</x:String>
+                                    <x:String>Flex</x:String>
+                                    <x:String>Álcool</x:String>
+                                    <x:String>Diesel</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </VerticalStackLayout>
+
+                        <!-- Câmbio -->
+                        <VerticalStackLayout Spacing="5">
+                            <Label Text="Câmbio" 
+                                   FontSize="12"/>
+                            <Picker x:Name="PickerCambio"
+                                    Title="Selecione o câmbio..."
+                                    SelectedIndexChanged="OnFormChanged">
+                                <Picker.Items>
+                                    <x:String>Manual 5 marchas</x:String>
+                                    <x:String>Manual 6 marchas</x:String>
+                                    <x:String>Automático 4 marchas</x:String>
+                                    <x:String>Automático 6 marchas</x:String>
+                                    <x:String>CVT</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Botões de Ação -->
+            <Grid ColumnDefinitions="*,*" 
+                  ColumnSpacing="10"
+                  Margin="0,10">
+
+                <Button x:Name="BtnCancelar"
+                        Text="CANCELAR"
+                        BackgroundColor="#9E9E9E"
+                        TextColor="White"
+                        CornerRadius="8"
+                        HeightRequest="50"
+                        FontSize="14"
+                        Clicked="OnCancelarClicked"/>
+
+                <Button x:Name="BtnSalvar"
+                        Text="SALVAR MOTOR"
+                        BackgroundColor="#2196F3"
+                        TextColor="White"
+                        CornerRadius="8"
+                        HeightRequest="50"
+                        FontSize="14"
+                        FontAttributes="Bold"
+                        Clicked="OnSalvarClicked"
+                        IsEnabled="False"/>
+            </Grid>
+
+            <!-- Dica -->
+            <Label Text="* Campos obrigatórios" 
+                   FontSize="11"
+                   TextColor="#666"
+                   HorizontalOptions="Center"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
